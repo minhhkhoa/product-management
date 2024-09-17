@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
-const storageMulter = require("../../helpers/storageMulter")
-const upload = multer({ storage: storageMulter() })
+const uploadCloud = require("../../middlewares/admin/uploadCloud.middleware")
+
+const upload = multer()
 
 // dung router thay cho app
 
@@ -27,8 +28,10 @@ router.get('/create', controller.create)
 
 router.post(
   '/create',
-  upload.single('thumbnail'), 
-
+  upload.single('thumbnail'),
+  //uploadfile to cloud
+  //https://cloudinary.com/blog/node_js_file_upload_to_a_local_server_or_to_the_cloud
+  uploadCloud.upload,
   //-Kiem tra validate
   validate.createPost,
   controller.createPost
@@ -37,9 +40,9 @@ router.post(
 router.get('/edit/:id', controller.edit)
 
 router.patch(
-  '/edit/:id', 
+  '/edit/:id',
   upload.single('thumbnail'),
-  validate.createPost, 
+  validate.createPost,
   controller.editSuccess)
 
 router.get('/detail/:id', controller.detail)
