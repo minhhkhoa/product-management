@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 //- kết nối vs pug
+// app.set('views', `./views`)
 app.set('views', `${__dirname}/views`)
 app.set('view engine', 'pug')
 // end conect pug
@@ -36,6 +37,7 @@ app.use(flash());
 const systemConfig = require("./config/systems")
 app.locals.prefixAdmin = systemConfig.prefixAdmin
 
+// app.use(express.static(`public`))
 app.use(express.static(`${__dirname}/public`))
 
 //Routes
