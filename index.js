@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 var methodOverride = require('method-override')
 var bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -32,6 +33,10 @@ app.use(cookieParser('khoaHii.'));
 app.use(session({ cookie: { maxAge: 60000 } }));
 app.use(flash());
 //end express-flash
+
+//start tinyMCE
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+//end tinyMCE
 
 // App Locals Variables( bieens nay dung dc o dau cx dc ca file pug)
 const systemConfig = require("./config/systems")
