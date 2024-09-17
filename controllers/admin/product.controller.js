@@ -1,4 +1,3 @@
-
 const Product = require("../../models/product.model")
 const filterStatusHelper = require("../../helpers/filterstatus")
 const searchHelper = require("../../helpers/search")
@@ -45,12 +44,13 @@ module.exports.index = async (req, res) => {
   } else {
     sort.position = "desc"
   }
-
   //-end sort 
+  
   //lay data
   const products = await Product.find(find)
     .sort(sort)
     .limit(objPagination.limitItems).skip(objPagination.skip)
+    
   res.render("admin/pages/products/index", {
     pageTitle: 'Danh sách sản phẩm',
     products: products,
