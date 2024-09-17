@@ -99,7 +99,6 @@ if (checkboxMulti) {
 }
 //end checkbox multi
 
-
 //start form change multi
 const formChangeMulti = document.querySelector("[form-change-multi]")
 if (formChangeMulti) {
@@ -177,9 +176,48 @@ if (uploadImage) {
   uploadImageInput.addEventListener("change", (e) => {
     const file = e.target.files[0]
     // console.log(file)
-    if(file) {
+    if (file) {
       uploadImagePreview.src = URL.createObjectURL(file)
     }
   })
 }
 //-End Upload preview image
+
+//-start sort
+const sort = document.querySelector("[sort]")
+if (sort) {
+  let url = new URL(window.location.href);
+  const sortSelect = sort.querySelector("[sort-select]")
+  const sortClear = sort.querySelector("[sort-clear]")
+
+  sortSelect.addEventListener("change", (e) => {
+    const value = e.target.value.split("-")
+    const [sortKey, sortValue] = value
+
+    //add param
+    url.searchParams.set("sortKey", sortKey)
+    url.searchParams.set("sortValue", sortValue)
+
+    //den trang do
+    window.location.href = url.href
+  })
+
+  //-btn clear
+  sortClear.addEventListener("click", () =>{
+    url.searchParams.delete("sortKey")
+    url.searchParams.delete("sortValue")
+
+    //den trang do
+    window.location.href = url.href
+  })
+
+  // -selected option
+  const sortKey = url.searchParams.get("sortKey")
+  const sortValue = url.searchParams.get("sortValue")
+  if (sortKey && sortValue) {
+    const stringSort = `${sortKey}-${sortValue}`
+    const optionSelected = sortSelect.querySelector(`option[value='${stringSort}']`)
+    optionSelected.selected = true
+  }
+}
+//-end sort

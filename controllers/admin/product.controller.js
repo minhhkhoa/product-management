@@ -37,12 +37,19 @@ module.exports.index = async (req, res) => {
   )
   //end phan trang
 
+  //-start sort 
+  const sort = {}
+  if (req.query.sortKey && req.query.sortValue) {
+    //Truyền 1 string thì []
+    sort[req.query.sortKey] = req.query.sortValue
+  } else {
+    sort.position = "desc"
+  }
+
+  //-end sort 
   //lay data
   const products = await Product.find(find)
-    .sort({
-      position: "desc" //-giamr daanf
-      // position: "asc" //-tang dan
-    })
+    .sort(sort)
     .limit(objPagination.limitItems).skip(objPagination.skip)
   res.render("admin/pages/products/index", {
     pageTitle: 'Danh sách sản phẩm',
@@ -154,7 +161,7 @@ module.exports.createPost = async (req, res) => {
   if (req.body.position == "") {
     const countProducts = await Product.countDocuments({})
     req.body.position = countProducts + 1
-  } else{
+  } else {
     req.body.position = parseInt(req.body.position)
   }
 
@@ -174,7 +181,7 @@ module.exports.edit = async (req, res) => {
     }
     const product = await Product.findOne(find)
     // console.log(product) //obj
-    
+
     res.render("admin/pages/products/edit", {
       pageTitle: 'Chỉnh sửa sản phẩm',
       product: product
@@ -228,6 +235,8 @@ module.exports.detail = async (req, res) => {
     res.redirect("/admin/products")
   }
 }
+
+
 
 
 
