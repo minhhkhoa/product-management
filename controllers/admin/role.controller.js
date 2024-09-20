@@ -1,6 +1,7 @@
 const Role = require("../../models/role.model")
 const systemConfig = require("../../config/systems")
-//[get]: /admin/role
+const { json } = require("body-parser")
+//[get]: /admin/roles
 module.exports.index = async (req, res) => {
   let find = {
     deleted: false
@@ -14,7 +15,7 @@ module.exports.index = async (req, res) => {
   })
 }
 
-//[get]: /admin/role/create
+//[get]: /admin/roles/create
 module.exports.create = async (req, res) => {
 
   res.render("admin/pages/roles/create", {
@@ -22,7 +23,7 @@ module.exports.create = async (req, res) => {
   })
 }
 
-//[post]: /admin/role/createPost
+//[post]: /admin/roles/createPost
 module.exports.createPost = async (req, res) => {
   // console.log(req.body)
 
@@ -33,7 +34,7 @@ module.exports.createPost = async (req, res) => {
   res.redirect(`${systemConfig.prefixAdmin}/roles`)
 }
 
-//[get]: /admin/role/edit/:id
+//[get]: /admin/roles/edit/:id
 module.exports.edit = async (req, res) => {
 
   try {
@@ -57,19 +58,42 @@ module.exports.edit = async (req, res) => {
 
 }
 
-//[patch]: /admin/role/edit/:id
+//[patch]: /admin/roles/edit/:id
 module.exports.editPatch = async (req, res) => {
 
   const id = req.params.id
 
   await Role.updateOne({_id: id},req.body)
 
-  res.render("admin/pages/roles/edit", {
-    pageTitle: 'Sửa nhóm quyền',
-  })
-
   req.flash("success","Cập nhật nhóm quyền thành công")
 
   res.redirect("back")
 
+}
+
+//[get]: /admin/roles/permissions
+module.exports.permissions = async (req, res) => {
+  let find = {
+    deleted: false
+  }
+
+  const records = await Role.find(find)
+
+  res.render("admin/pages/roles/permissions", {
+    pageTitle: 'Phân quyền',
+    records: records
+  })
+}
+
+//[patch]: /admin/roles/permissions
+module.exports.permissionsPatch = async (req, res) => {
+  //data gui qua form ==> BE lay tu body
+  const permissions = JSON.parse(req.body.permissions)
+
+  for (const item of permissions) {
+    await Role.updateOne({ _id: item.id }, { permissions: item.permissions })
+  }
+  
+  req.flash("success","Cập nhật phân quyền thành công")
+  res.redirect("back")
 }
