@@ -15,7 +15,7 @@ module.exports.requireAuth = async (req, res, next) => {
         _id: user.role_id
       }).select("title permissions")
 
-      // App Locals Variables( bieens nay dung dc o dau cx dc ca file pug)
+      // App Locals Variables( bieens nay dung dc o bất kỳ đâu kể cả pug)
       res.locals.user = user // mooix 1 token se la 1 tk do
       res.locals.role = role 
       next()

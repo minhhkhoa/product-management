@@ -21,12 +21,23 @@ const productSchema = new mongoose.Schema(
       slug: "title",
       unique: true
     },
+    createdBy:{
+      account_id: String,
+      createdAt: {
+        type: Date,
+        default: Date.now
+      }
+    },
     deleted: {
       type: Boolean,
       //neu ko truyen du lieu thi nhan macdinh la false
       default:false
     },
-    deletedAt: Date
+    deletedAt: Date,
+    // deletedBy: {
+    //   account_id: String,
+    //   deletedAt: Date
+    // },
   },
   //tham so thu 2
   {

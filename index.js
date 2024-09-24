@@ -5,6 +5,8 @@ var bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 var flash = require('express-flash')
+//-convert time in js
+var moment = require('moment')
 require("dotenv").config()
 
 const dataBase = require("./config/database")
@@ -41,6 +43,7 @@ app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce
 // App Locals Variables( bieens nay dung dc o dau cx dc ca file pug)
 const systemConfig = require("./config/systems")
 app.locals.prefixAdmin = systemConfig.prefixAdmin
+app.locals.moment = moment
 
 // app.use(express.static(`public`))
 app.use(express.static(`${__dirname}/public`))
