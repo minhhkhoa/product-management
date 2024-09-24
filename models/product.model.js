@@ -28,6 +28,7 @@ const productSchema = new mongoose.Schema(
         default: Date.now
       }
     },
+    
     deleted: {
       type: Boolean,
       //neu ko truyen du lieu thi nhan macdinh la false
@@ -38,6 +39,12 @@ const productSchema = new mongoose.Schema(
       account_id: String,
       deletedAt: Date
     },
+    updatedBy: [
+      {
+        account_id: String,
+        updatedAt: Date
+      }
+    ],
   },
   //tham so thu 2
   {
