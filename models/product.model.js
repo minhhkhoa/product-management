@@ -33,11 +33,11 @@ const productSchema = new mongoose.Schema(
       //neu ko truyen du lieu thi nhan macdinh la false
       default:false
     },
-    deletedAt: Date,
-    // deletedBy: {
-    //   account_id: String,
-    //   deletedAt: Date
-    // },
+    // deletedAt: Date,
+    deletedBy: {
+      account_id: String,
+      deletedAt: Date
+    },
   },
   //tham so thu 2
   {
