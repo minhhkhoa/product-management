@@ -20,3 +20,20 @@ module.exports.createPost = (req, res, next) => {
   
   next() //sang Bước kết tiếp là đi vào controller
 }
+
+//- req và res được truyền sẵn rồi
+module.exports.editPatch = (req, res, next) => {
+  if (!req.body.fullName) {
+    req.flash("error", "Vui lòng nhập họ tên")
+    res.redirect("back")
+    return
+  }
+
+  if (!req.body.email) {
+    req.flash("error", "Vui lòng nhập email")
+    res.redirect("back")
+    return
+  }
+
+  next() //sang Bước kết tiếp là đi vào controller
+}

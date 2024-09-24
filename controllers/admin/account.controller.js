@@ -48,15 +48,69 @@ module.exports.createPost = async (req, res) => {
     email: req.body.email,
     deleted: false
   })
-  if(emailExits){
-    req.flash("error","Email đã tồn tại")
+  if (emailExits) {
+    req.flash("error", "Email đã tồn tại")
     res.redirect("back")
-  } else{
+  } else {
     //-mã hóa mật khẩu
     req.body.password = md5(req.body.password)
     const record = new Account(req.body);
     await record.save()
-  
+
     res.redirect(`${systemConfig.prefixAdmin}/accounts`)
   }
+}
+
+//[get]: /admin/accounts/edit/:id
+module.exports.edit = async (req, res) => {
+  let find = {
+    _id: req.params.id,
+    deleted: false
+  }
+
+  try {
+    const data = await Account.findOne(find)
+
+    const roles = await Role.find({
+      deleted: false
+    })
+
+    res.render("admin/pages/accounts/edit", {
+      pageTitle: "Chỉnh sửa tài khoản",
+      data: data,
+      roles: roles
+    })
+  } catch (err) {
+    res.redirect(`${systemConfig.prefixAdmin}/accounts`)
+  }
+}
+
+//[patch]: /admin/accounts/edit/:id
+module.exports.editPatch = async (req, res) => {
+  //-id thằng đang sửa
+  const id = req.params.id
+
+  const emailExits = await Account.findOne({
+    _id: { //- bỏ tìm đứa đang sửa đi
+      $ne: id
+      //-not equals
+    },
+    email: req.body.email,
+    deleted: false
+  })
+
+  if (emailExits) {
+    req.flash("error", "Email đã tồn tại")
+  } else {
+    if (req.body.password) {//-nếu sửa lại mk
+      req.body.password = md5(req.body.password)
+    } else {
+      delete req.body.password //- xóa key password
+    }
+    await Account.updateOne({ _id: id }, req.body)
+    req.flash("success", "Cập nhật thành công")
+  }
+  
+  res.redirect("back")
+
 }
