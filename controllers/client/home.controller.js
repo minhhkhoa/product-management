@@ -2,19 +2,31 @@ const Product = require("../../models/product.model")
 const productsHelper = require("../../helpers/product")
 
 //[get]: /
-module.exports.index = async(req, res) => {
-  //-lay ra sp noi bat
+module.exports.index = async (req, res) => {
+  //-start lay ra sp noi bat
   const productsFeatured = await Product.find({
     featured: "1",
     deleted: false,
     status: "active"
-  }).limit(5)
+  }).limit(6)
 
   //-tinh lai gia moi
-  const newProduct = productsHelper.priceNewProducts(productsFeatured)
+  const newProductsFeatured = productsHelper.priceNewProducts(productsFeatured)
+  //-end lay ra sp noi bat
 
-  res.render("client/pages/home/index",{
+
+  // -start show new products 
+  const productsNew = await Product.find({
+    deleted: false,
+    status: "active"
+  }).sort({ position: "desc" }).limit(6)
+
+  const newProductNew = productsHelper.priceNewProducts(productsNew)
+  // -end show new products 
+
+  res.render("client/pages/home/index", {
     pageTitle: 'Trang chủ',
-    productsFeatured: newProduct,
+    productsFeatured: newProductsFeatured,
+    productsNew: newProductNew
   })
 }
