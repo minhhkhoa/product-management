@@ -26,15 +26,28 @@ module.exports.index = async (req, res) => {
 
 //[get]: /products/:slug
 module.exports.detail = async (req, res) => {
-  const slug = req.params.slug
   try {
     // console.log(req.params.id)
     const find = {
       deleted: false,
-      slug: slug,
+      slug: req.params.slugProduct,
       status: "active"
     }
     const product = await Product.findOne(find)
+
+    //-ý là muốn lấy ra tên danh mục
+    if(product.product_category_id){ // co id cha thi them category cho sp do
+      const category = await ProductCategory.findOne({
+        _id: product.product_category_id,
+        status: 'active',
+        deleted: false
+      })
+
+      product.category = category
+    }
+
+    //-tinh gia moi
+    product.priceNew = productsHelper.priceNewProduct(product)
 
     res.render("client/pages/products/detail", {
       pageTitle: product.title,
