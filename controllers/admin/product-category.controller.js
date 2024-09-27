@@ -39,17 +39,22 @@ module.exports.create = async (req, res) => {
 
 //[post]:/admin/products-category/create
 module.exports.createPost = async (req, res) => {
-  if (req.body.position == "") {
-    const count = await ProductCategory.countDocuments({})
-    req.body.position = count + 1
+  const permissions = res.locals.role.permissions;
+
+  if (permissions.includes("products-category_create")) {
+    if (req.body.position == "") {
+      const count = await ProductCategory.countDocuments({})
+      req.body.position = count + 1
+    } else {
+      req.body.position = parseInt(req.body.position)
+    }
+
+    const record = new ProductCategory(req.body)
+    await record.save()
+    res.redirect(`${systemConfig.prefixAdmin}/products-category`)
   } else {
-    req.body.position = parseInt(req.body.position)
+    return
   }
-
-  const record = new ProductCategory(req.body)
-  await record.save()
-  res.redirect(`${systemConfig.prefixAdmin}/products-category`)
-
 }
 
 //[get]: /admin/products-category/edit/:id
@@ -86,7 +91,7 @@ module.exports.editPatch = async (req, res) => {
 
   req.body.position = parseInt(req.body.position)
 
-  await ProductCategory.updateOne({ _id: id }, req.body )
+  await ProductCategory.updateOne({ _id: id }, req.body)
 
   //update
 
