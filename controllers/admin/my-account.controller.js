@@ -24,8 +24,7 @@ module.exports.editPatch = async (req, res)=>{
 
   const emailExits = await Account.findOne({
     _id: { //- bỏ tìm đứa đang sửa đi
-      $ne: id
-      //-not equals
+      $ne: id //-not equals
     },
     email: req.body.email,
     deleted: false
