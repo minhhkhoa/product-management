@@ -2,7 +2,7 @@ const User = require("../../models/user.model")
 const ForgotPassword = require("../../models/forgot-password.model")
 const md5 = require("md5")
 const generateHelper = require("../../helpers/generate")
-
+const sendMailHelper = require("../../helpers/sendMail")
 
 //[get] /user/register
 module.exports.register = async (req, res) => {
@@ -112,13 +112,91 @@ module.exports.forgotPasswordPost = async (req, res) => {
   const objectForgotPassword = {
     email: email,
     otp: otp,
-    expiresAt: Date.now()
+    expireAt: Date.now()
   }
 
   const forgotPassword = new ForgotPassword(objectForgotPassword)
   await forgotPassword.save()
 
-  //-neu ton tai email can doi passs ==> gui ma otp qua email
+  //-neu ton tai email can doi passs ==> gui ma otp qua email dung tv nodemailer
+  const subject = "Mã OTP xác minh lấy lại mật khẩu"
+  const html = `
+    Mã OTP để lấy lại mật khẩu là: <b>${otp}</b>. Thời hạn sử dụng là 3 phút.
+  `
+  sendMailHelper.sendMail(email, subject, html)
 
+  //-chuyen huong
+  res.redirect(`/user/password/otp?email=${email}`)
+}
+
+//[get] /user/password/otpPassword
+module.exports.otpPassword = async (req, res) => {
+  const email = req.query.email
+
+  res.render("client/pages/user/otp-password", {
+    pageTitle: "Nhập mã OTP",
+    email: email
+  })
+}
+
+//[post] /user/password/otp
+module.exports.otpPasswordPost = async (req, res) => {
+
+  //-lay ra thong tin ng dung gui qua form
+  const email = req.body.email
+  const otp = req.body.otp
+
+  const result = await ForgotPassword.findOne({
+    email: email,
+    otp: otp
+  })
+
+  if(!result){
+    req.flash("error","Mã OTP không hợp lệ")
+    res.redirect("back")
+    return
+  }
+
+  //- chay toi day thi tuc la da nhap dung ma OTP roi
+  const user = await User.findOne({
+    email: email
+  })
+
+  res.cookie("tokenUser", user.tokenUser)
+  // Mục đích chính: Cookie này có thể được sử dụng để XÁC THỰC NG DUNG NÀO CẦN ĐỔI MẬT KHẨU
+  //dung o: //[post] /user/password/reset
+
+  res.redirect("/user/password/reset")
+  
+}
+
+//[get] /user/password/reset
+module.exports.resetPassword = async (req, res) => {
+
+  res.render("client/pages/user/reset-password", {
+    pageTitle: "Đổi mật khẩu",
+  })
+}
+
+//[post] /user/password/reset
+module.exports.resetPasswordPost = async (req, res) => {
+
+  //- lay ra thong tin ng dung nhap tu form
+  const password = req.body.password
+  //const confirmpassword = req.body.confirmpassword //- ko can lam vi validate r
+
+   //- bay gio phai check ra dung tk tokenUser do
+   const tokenUser = req.cookies.tokenUser
+
+
+   await User.updateOne({
+    tokenUser: tokenUser
+   },{
+    //-doi pass
+     password: md5(password)
+   })
+
+   //-ve trang chu
+   res.redirect("/")
 
 }

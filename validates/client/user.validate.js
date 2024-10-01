@@ -49,3 +49,26 @@ module.exports.forgotPasswordPost = (req, res, next) => {
   next() //sang Bước kết tiếp là đi vào controller
 }
 
+module.exports.resetPasswordPost = (req, res, next) => {
+
+  if (!req.body.password) {
+    req.flash("error", "Vui lòng nhập mật khẩu")
+    res.redirect("back")
+    return
+  }
+
+  if (!req.body.confirmpassword) {
+    req.flash("error", "Vui lòng xác nhận mật khẩu")
+    res.redirect("back")
+    return
+  }
+
+  if (req.body.password != req.body.confirmpassword) {
+    req.flash("error", "Mật khẩu không khớp")
+    res.redirect("back")
+    return
+  }
+
+  next() //sang Bước kết tiếp là đi vào controller
+}
+
