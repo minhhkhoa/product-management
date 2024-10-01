@@ -1,5 +1,6 @@
 const categoryMiddleware = require("../../middlewares/client/category.middleware")
 const cartMiddleware = require("../../middlewares/client/cart.middleware")
+const userMiddleware = require("../../middlewares/client/user.middleware")
 const homeRouters = require("./home.route")
 const productRouters = require("./product.route")
 const searchRouters = require("./search.route")
@@ -12,6 +13,7 @@ module.exports = (app) => {
   //them nhu nay o duoi do phai them tung cai
   app.use(categoryMiddleware.category)
   app.use(cartMiddleware.cartId)
+  app.use(userMiddleware.infoUser)
 
   app.use(
     '/', 
