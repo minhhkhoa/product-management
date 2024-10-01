@@ -4,6 +4,7 @@ const homeRouters = require("./home.route")
 const productRouters = require("./product.route")
 const searchRouters = require("./search.route")
 const cartRouters = require("./cart.route")
+const checkRouters = require("./checkout.route")
 
 //- Nhungs file home
 module.exports = (app) => {
@@ -27,5 +28,9 @@ module.exports = (app) => {
   app.use(
     '/cart',
     cartRouters)
+
+  app.use(
+    '/checkout',
+    checkRouters)
   
 }
