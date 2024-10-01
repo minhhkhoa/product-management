@@ -40,7 +40,6 @@ module.exports.index = async (req, res) => {
   })
 }
 
-
 //[post]: /cart/add/:productId
 module.exports.addPost = async (req, res) => {
   //-them sp vao gio
@@ -112,5 +111,28 @@ module.exports.delete = async (req, res) => {
 
 
   req.flash("success","Đã xóa sản phẩm khỏi giỏ hàng")
+  res.redirect("back")
+}
+
+//[get]: /update/:productId/:quantity
+module.exports.update = async (req, res) => {
+
+  const cartId = req.cookies.cartId
+  const productId = req.params.productId
+  const quantity = req.params.quantity
+
+  //-cap nhat lai quantity vao dung obj dang luu
+  await Cart.updateOne({
+    _id: cartId, //- day la id gio hang
+    "products.product_id": productId //-products day la o trong cart.model choc vao product_id
+  }, {
+    $set: { //-set lai giatri quantity
+      "products.$.quantity": quantity
+    }
+  })
+
+
+
+  req.flash("success","Cập nhật số lượng thành công")
   res.redirect("back")
 }
