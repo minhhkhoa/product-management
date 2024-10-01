@@ -38,3 +38,14 @@ module.exports.loginPost = (req, res, next) => {
   next() //sang Bước kết tiếp là đi vào controller
 }
 
+module.exports.forgotPasswordPost = (req, res, next) => {
+
+  if (!req.body.email) {
+    req.flash("error", "Vui lòng nhập email")
+    res.redirect("back")
+    return
+  }
+
+  next() //sang Bước kết tiếp là đi vào controller
+}
+

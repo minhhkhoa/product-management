@@ -1,5 +1,7 @@
 const User = require("../../models/user.model")
+const ForgotPassword = require("../../models/forgot-password.model")
 const md5 = require("md5")
+const generateHelper = require("../../helpers/generate")
 
 
 //[get] /user/register
@@ -31,8 +33,6 @@ module.exports.registerPost = async (req, res) => {
   res.cookie("tokenUser", user.tokenUser)
 
   res.redirect("/")
-
-
 }
 
 //[get] /user/login
@@ -58,7 +58,7 @@ module.exports.postLogin = async (req, res) => {
     res.redirect("back")
     return
   }
-  
+
   if (md5(password) != user.password) {
     req.flash("error", "Mật khẩu không chính xác")
     res.redirect("back")
@@ -81,4 +81,44 @@ module.exports.logout = async (req, res) => {
   //-xoa cookie
   res.clearCookie("tokenUser")
   res.redirect("/")
+}
+
+//[get] /user/password/forgot
+module.exports.forgotPassword = async (req, res) => {
+
+  res.render("client/pages/user/forgot-password", {
+    pageTitle: "Lấy lại mật khẩu"
+  })
+}
+
+//[post] /user/password/forgot
+module.exports.forgotPasswordPost = async (req, res) => {
+  const email = req.body.email
+
+  const user = await User.findOne({
+    email: email,
+    deleted: false
+  })
+
+  //check
+  if (!user) {
+    req.flash("error", "Email không tồn tại")
+    res.redirect("back")
+    return
+  }
+
+  //- luu thong tin dua can doi pass vao db
+  const otp = generateHelper.generateRandomNumber(8)
+  const objectForgotPassword = {
+    email: email,
+    otp: otp,
+    expiresAt: Date.now()
+  }
+
+  const forgotPassword = new ForgotPassword(objectForgotPassword)
+  await forgotPassword.save()
+
+  //-neu ton tai email can doi passs ==> gui ma otp qua email
+
+
 }
