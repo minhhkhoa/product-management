@@ -9,7 +9,7 @@ module.exports.priceNewProducts = (products) => {
 
 //-tinh gia cho 1 sp
 module.exports.priceNewProduct = (product) => {
-  const priceNew = (product.price - product.price * product.discountPercentage / 100).toFixed(0)
+  const priceNew = parseInt((product.price - product.price * product.discountPercentage / 100).toFixed(0))
 
   return priceNew
 }
