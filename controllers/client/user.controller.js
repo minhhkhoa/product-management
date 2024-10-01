@@ -72,12 +72,22 @@ module.exports.postLogin = async (req, res) => {
     return
   }
 
-  //- lay ra cartId: muc dich la them user_Id cho cardId
-  await Cart.updateOne({
-    _id: req.cookies.cartId
-  },{
+  const cart = await Cart.findOne({
     user_id: user.id
   })
+
+  if (cart) {
+    res.cookie("cartId", cart.cartId)
+  } else {
+    await Cart.updateOne({
+      _id: req.cookies.cartId
+    }, {
+      user_id: user.id
+    })
+  }
+
+  //- lay ra cartId: muc dich la them user_Id cho cardId
+
 
   res.cookie("tokenUser", user.tokenUser) //-muc dich la dung tokenUser moi cho login o middleware co viet
 
