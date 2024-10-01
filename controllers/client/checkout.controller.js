@@ -42,18 +42,18 @@ module.exports.index = async (req, res) => {
 
 //[post] /checkout/order
 module.exports.order = async (req, res) => {
-  
+
   const cartId = req.cookies.cartId
   //-console.log(req.body)
   const userInfo = req.body //- chinh la cai thong tin form gui len
-  
+
   //-lay ra gio hang
   const cart = await Cart.findOne({
     _id: cartId
   })
-  
+
   const products = []
-  
+
   //-muc dich doan nay==> doc comment trong model cua order
   for (const product of cart.products) {
     const objectProduct = {//-lay ra tung sp
@@ -62,45 +62,69 @@ module.exports.order = async (req, res) => {
       discountPercentage: 0,
       quantity: product.quantity,
     }
-    
+
     const productInfo = await Product.findOne({//-sp khach da them vao gio
       _id: product.product_id
     }).select("price discountPercentage")
-    
+
     objectProduct.price = productInfo.price
     objectProduct.discountPercentage = productInfo.discountPercentage
-    
+
     //-muc dich la lay lai ra sp ma khach hang dat voi cai gia hay % giam ban dau
     //- vi so rang khach them vao gio song hom sau sp tang gia manh hon thi khach se ko bi thiet
     products.push(objectProduct)
   }
-  
+
   //luu vao db
   const orderInfo = {
     cart_id: cartId,
     userInfo: userInfo,
     products: products
   }
-  
-  const order = new Order(orderInfo)
+
+  const order = new Order(orderInfo) //- tu dong sinh ra id
   order.save()
-  
+
   //-sau khi dat hang thanh cong thi cac sp trong gio nen bi xoa di
   await Cart.updateOne({
     _id: cartId
-  },{
+  }, {
     products: [] //- cho ve mang rong
   })
-  
+
   res.redirect(`/checkout/success/${order.id}`)
 }
-
 
 //[post] /checkout/success/:orderId
 module.exports.success = async (req, res) => {
 
-  // req.params.orderId
+  // req.params.orderId: lay o controller ben tren
+  const order = await Order.findOne({//-toan bo thong tin ng dat va sp ho dat
+    _id: req.params.orderId
+  })
+
+  for (const product of order.products) {
+    const productInfo = await Product.findOne({
+      _id: product.product_id //- tu product_id cua order lay ra chi tiet sp ben Products
+    }).select("title thumbnail")
+
+    //-sau do gan lai cho product dang lap
+    product.productInfo = productInfo
+
+    //cap nhat gia moi
+    product.priceNew = productsHelper.priceNewProduct(product)
+
+    //tong tien moi sp
+    product.totalPrice = product.priceNew * product.quantity
+  }
+
+  //-tong tien ca don hang
+
+  order.totalPrice = order.products.reduce((sum, item) => sum + item.totalPrice, 0)
+
+
   res.render("client/pages/checkout/success", {
-    pageTitle: "Đặt hàng thành công"
+    pageTitle: "Đặt hàng thành công",
+    order: order
   })
 }

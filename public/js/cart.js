@@ -12,6 +12,4 @@ if (inputQuantity.length > 0) {
     })
   })
 }
-
-
 //-end cap nhat lai so lg sp ben gio hang
