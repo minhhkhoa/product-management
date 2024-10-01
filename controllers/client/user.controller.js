@@ -1,5 +1,6 @@
 const User = require("../../models/user.model")
 const ForgotPassword = require("../../models/forgot-password.model")
+const Cart = require("../../models/cart.model")
 const md5 = require("md5")
 const generateHelper = require("../../helpers/generate")
 const sendMailHelper = require("../../helpers/sendMail")
@@ -71,7 +72,16 @@ module.exports.postLogin = async (req, res) => {
     return
   }
 
+  //- lay ra cartId: muc dich la them user_Id cho cardId
+  await Cart.updateOne({
+    _id: req.cookies.cartId
+  },{
+    user_id: user.id
+  })
+
   res.cookie("tokenUser", user.tokenUser) //-muc dich la dung tokenUser moi cho login o middleware co viet
+
+
 
   res.redirect("/")
 }
