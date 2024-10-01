@@ -21,5 +21,8 @@ router.post(
   controller.postLogin
 )
 
+router.get("/logout", controller.logout)
+
+
 
 module.exports = router

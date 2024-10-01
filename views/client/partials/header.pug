@@ -40,11 +40,16 @@ header.header
               //- co thi in tong so sp ko co thi in 0 
               a(href=`/cart`) Giỏ hàng (#{ miniCart ? miniCart.totalQuantity : 0})
 
-            li 
-              a(href="user/login") Đăng nhập
+            //- user la bien toan cuc khoi tao ben middleware user y
+            if(user)
+              li 
+                a(href="user/logout") Đăng xuất
+            else 
+              li 
+                a(href="user/login") Đăng nhập
 
-            li 
-              a(href="/user/register") Đăng ký
+              li 
+                a(href="/user/register") Đăng ký
 
               
 
