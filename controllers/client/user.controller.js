@@ -151,8 +151,8 @@ module.exports.otpPasswordPost = async (req, res) => {
     otp: otp
   })
 
-  if(!result){
-    req.flash("error","Mã OTP không hợp lệ")
+  if (!result) {
+    req.flash("error", "Mã OTP không hợp lệ")
     res.redirect("back")
     return
   }
@@ -167,7 +167,7 @@ module.exports.otpPasswordPost = async (req, res) => {
   //dung o: //[post] /user/password/reset
 
   res.redirect("/user/password/reset")
-  
+
 }
 
 //[get] /user/password/reset
@@ -185,18 +185,25 @@ module.exports.resetPasswordPost = async (req, res) => {
   const password = req.body.password
   //const confirmpassword = req.body.confirmpassword //- ko can lam vi validate r
 
-   //- bay gio phai check ra dung tk tokenUser do
-   const tokenUser = req.cookies.tokenUser
+  //- bay gio phai check ra dung tk tokenUser do
+  const tokenUser = req.cookies.tokenUser
 
 
-   await User.updateOne({
+  await User.updateOne({
     tokenUser: tokenUser
-   },{
+  }, {
     //-doi pass
-     password: md5(password)
-   })
+    password: md5(password)
+  })
 
-   //-ve trang chu
-   res.redirect("/")
+  //-ve trang chu
+  res.redirect("/")
 
+}
+
+//[get] /user/info
+module.exports.info = async (req, res) => {
+  res.render("client/pages/user/info", {
+    pageTitle: "Thông tin tài khoản",
+  })
 }
