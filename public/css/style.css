@@ -241,3 +241,116 @@
 }
 
 /* End Show Alert */
+
+
+/* start chat */
+/* Đặt kích thước và viền cho khu vực chat */
+.chat {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 500px;
+  overflow: hidden;
+}
+
+/* Định dạng phần nội dung chat */
+.inner-body {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* Định dạng cho các tin nhắn */
+.inner-incoming,
+.inner-outgoing {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Tin nhắn outgoing căn phải */
+.inner-outgoing {
+  align-items: flex-end;
+}
+
+/* Định dạng tên người gửi */
+.inner-incoming .inner-name,
+.inner-outgoing .inner-name {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+  /* Màu chữ cho tên người gửi */
+}
+
+/* Định dạng nội dung tin nhắn */
+.inner-incoming .inner-content,
+.inner-outgoing .inner-content {
+  display: block;
+  padding: 10px;
+  border-radius: 15px;
+  max-width: 80%;
+  /* Đảm bảo tin nhắn không chiếm hết chiều rộng */
+  word-wrap: break-word;
+}
+
+/* Tin nhắn đến (nền xám) */
+.inner-incoming .inner-content {
+  background-color: #ebebeb;
+  color: black;
+}
+
+/* Tin nhắn đi (nền hồng) */
+.inner-outgoing .inner-content {
+  background-color: #ff99cc;
+  color: white;
+  text-align: left;
+  /* Canh trái cho nội dung tin nhắn outgoing */
+}
+
+/* Định dạng cho phần input */
+.inner-foot {
+  display: flex;
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
+}
+
+.inner-foot form {
+  display: flex;
+  width: 100%;
+}
+
+.inner-foot input[type="text"] {
+  flex-grow: 1;
+  padding: 10px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+
+.inner-foot button {
+  background-color: #ff99cc;
+  border: none;
+  padding: 0 15px;
+  margin-left: 10px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.inner-foot button i {
+  font-size: 20px;
+}
+
+/* end chat */

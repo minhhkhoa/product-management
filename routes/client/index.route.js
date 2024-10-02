@@ -9,6 +9,7 @@ const searchRouters = require("./search.route")
 const cartRouters = require("./cart.route")
 const checkRouters = require("./checkout.route")
 const userRouters = require("./user.route")
+const chatRouters = require("./chat.route")
 
 
 //- Nhungs file home
@@ -43,5 +44,9 @@ module.exports = (app) => {
   app.use(
     '/user',
     userRouters)
+
+  app.use(
+    '/chat',
+    chatRouters)
   
 }
