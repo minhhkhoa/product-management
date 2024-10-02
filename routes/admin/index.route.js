@@ -8,6 +8,7 @@ const roleRouters = require("./role.route")
 const accountRouters = require("./account.route")
 const authRouters = require("./auth.route")
 const myAccountRouters = require("./my-account.route")
+const settingRouters = require("./setting.route")
 //- Nhungs file home
 module.exports = (app) => {
   const PATH_ADMIN = systemConfig.prefixAdmin
@@ -51,6 +52,12 @@ module.exports = (app) => {
     PATH_ADMIN + '/my-account',
     authMiddleware.requireAuth,
     myAccountRouters
+  )
+
+  app.use(
+    PATH_ADMIN + '/settings',
+    authMiddleware.requireAuth,
+    settingRouters
   )
 
 }
