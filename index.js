@@ -28,9 +28,7 @@ const port = process.env.PORT
 //- start soket io goi o day
 const server = http.createServer(app)
 const io = new Server(server)
-io.on('connection', (socket) => {
-  console.log('a user connected', socket.id);
-})
+global._io = io //- bay gio io co the dung vs tat ca cac file vs ten bien la _io
 //- end soket io goi o day
 
 
