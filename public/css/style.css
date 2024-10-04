@@ -340,7 +340,7 @@
   background-color: #ff99cc;
   border: none;
   padding: 0 15px;
-  margin-left: 10px;
+  margin-left: 5px;
   border-radius: 50%;
   color: white;
   display: flex;
@@ -353,4 +353,22 @@
   font-size: 20px;
 }
 
+.button-icon {
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  padding: 0 5px;
+}
+
 /* end chat */
+
+/* -start emoji icon */
+.tooltip {
+  visibility:hidden;
+}
+.tooltip.shown {
+  visibility:visible;
+  opacity: 1;
+}
+
+/* -end emoji icon */
