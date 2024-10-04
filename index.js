@@ -7,6 +7,13 @@ const session = require('express-session')
 var flash = require('express-flash')
 //-convert time in js
 var moment = require('moment')
+
+//-socket io khai bao
+const http = require('http')
+const { Server } = require("socket.io")
+
+
+
 require("dotenv").config()
 
 const dataBase = require("./config/database")
@@ -17,6 +24,15 @@ const route = require("./routes/client/index.route")
 
 const app = express()
 const port = process.env.PORT
+
+//- start soket io goi o day
+const server = http.createServer(app)
+const io = new Server(server)
+io.on('connection', (socket) => {
+  console.log('a user connected', socket.id);
+})
+//- end soket io goi o day
+
 
 app.use(methodOverride('_method'))
 
@@ -59,6 +75,6 @@ app.get("*", (req, res) => { //- * la cac th con lai
   })
 })
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
