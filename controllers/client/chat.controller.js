@@ -5,18 +5,26 @@ const User = require("../../models/user.model")
 module.exports.index = async (req, res) => {
   //- id ng dung
   const userId = res.locals.user.id //- di qua middleware da tao ra 1 bien cuc bo user roi vao do xem lai
-
+  const fullName = res.locals.user.fullName
 
   //- start socket.io
   //- once: chi gui 1 lan duy nhat thoi
   _io.once('connection', (socket) => {//- lang nghe sk nhan ve
-    socket.on("CLIENT_SEND_MESSAGE", async (content)=>{
+    socket.on("CLIENT_SEND_MESSAGE", async (content)=>{//-2
       //- khi nhan dc data thi luu vao db
       const chat = new Chat({
         user_id: userId,
         content: content
       })
       await chat.save()
+
+      //- Tra data ve cho client bao gom ten va nd tin nhan. Dung tu tk To nhat la _io
+      //-3
+      _io.emit("SEVER_RETURN_MESSAGE", {//- gui di 1 obj
+        userId: userId,
+        fullName: fullName,
+        content: content
+      })
     })
   })
   //- end socket.io

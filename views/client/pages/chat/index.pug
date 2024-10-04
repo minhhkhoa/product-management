@@ -9,7 +9,8 @@ block main
 
     .row
       .col-12
-        .chat
+        //- cờ để biets dc ai chat
+        .chat(my-id=user.id)
           //- .inner-head
           //- .inner-avatar EY
           //- .inner-name Em Yeu
@@ -22,20 +23,6 @@ block main
                   .inner-name #{chat.infoUser.fullName}
                 .inner-content
                   | #{chat.content}
-            //- .inner-outgoing
-            //-   .inner-content
-            //-     | Thế à? Oke em iu
-            //- .inner-incoming
-            //-   .inner-name Em Yêu
-            //-   .inner-content
-            //-     | Nhanh nha nhanh nha
-            //- .inner-outgoing
-            //-   .inner-content
-            //-     | Ck đến rồi mà thấy ai ở nhà đâu em? Khóa cửa mà :(
-            //- .inner-incoming
-            //-   .inner-name Em Yêu
-            //-   .inner-content  
-            //-     | Thì em bảo nhà em không có ai mà :))
 
           .inner-foot 
             form(
