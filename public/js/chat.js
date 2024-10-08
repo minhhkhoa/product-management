@@ -10,6 +10,7 @@ if (formSendData) { //-1
       // console.log(content)
       socket.emit("CLIENT_SEND_MESSAGE", content);//- socket dc nhung vao roi o cho layoutsDefault client
       e.target.elements.content.value = ""
+      socket.emit("CLIENT_SEND_TYPING", "hidden") //- tat typing sau khi an gui
     }
   })
 }
@@ -22,6 +23,8 @@ socket.on("SEVER_RETURN_MESSAGE", (data) => { //- nhan ve data da dc emit di tu 
   const body = document.querySelector(".chat .inner-body")
   //- lay ra cờ de biet dc ong nao dang chat
   const myId = document.querySelector("[my-id]").getAttribute("my-id")
+
+  const boxTyping = document.querySelector(".chat .inner-list-typing")
 
   const div = document.createElement("div")
   let htmlFullName = ""
@@ -37,7 +40,7 @@ socket.on("SEVER_RETURN_MESSAGE", (data) => { //- nhan ve data da dc emit di tu 
     ${htmlFullName}
     <div class="inner-content"> ${data.content} </div>
   `
-  body.appendChild(div)
+  body.insertBefore(div, boxTyping)//- luon insert div trc cai boxTyping
 
   body.scrollTop = body.scrollHeight
 
@@ -62,18 +65,38 @@ buttonIcon.onclick = () => {
 }
 //- end show popup
 
+//-Show typing
+var timeOut
+const showTyping = () => {
+  socket.emit("CLIENT_SEND_TYPING", "show")
+
+  clearTimeout(timeOut) //- moi lan go se clearTimeout
+  timeOut = setTimeout(() => {
+    socket.emit("CLIENT_SEND_TYPING", "hidden")
+  }, 4000)
+}
+//-end Show typing
+
 //-start insert icon to input
+
 const emojiPicker = document.querySelector("emoji-picker")
 if (emojiPicker) {
   const inputChat = document.querySelector(".chat .inner-form input[name='content']")
   emojiPicker.addEventListener("emoji-click", (event) => {
     const icon = event.detail.unicode
     inputChat.value = inputChat.value + icon
+
+    const end = inputChat.value.length
+    inputChat.setSelectionRange(end, end) //- con tro chuot luon o cuoi vanban
+    inputChat.focus()
+
+    showTyping()
+
   })
 
   // - start input keyup
   inputChat.addEventListener("keyup", () => {
-    socket.emit("CLIENT_SEND_TYPING", "show")
+    showTyping()
   })
   // - end input keyup
 }
@@ -81,8 +104,39 @@ if (emojiPicker) {
 //- end show Icon chat
 
 // - start SEVER_RETURN_TYPING
-socket.on("SEVER_RETURN_TYPING",(data) => {
-  console.log(data)
-})
+//-lay ra khoi typing
+const elementListTyping = document.querySelector(".chat .inner-list-typing")
+if (elementListTyping) {
+  socket.on("SEVER_RETURN_TYPING", (data) => {
+    if (data.type == "show") {
+      const bodyChat = document.querySelector(".chat .inner-body")
+      const existTyping = elementListTyping.querySelector(`[user-id="${data.userId}"]`) //- muc dich la tranh typing nhieu lan xoa di thu check xem
+      if (!existTyping) {
+        const boxTyping = document.createElement("div")
+        boxTyping.classList.add("box-typing")
+        boxTyping.setAttribute("user-id", data.userId) //- theem cowf ddeer check
+
+        boxTyping.innerHTML = `
+          <div class="inner-name">${data.fullName}</div>
+          <div class="inner-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+          </div>
+        `
+
+        elementListTyping.appendChild(boxTyping)
+        bodyChat.scrollTop = bodyChat.scrollHeight
+
+      }
+    } else {
+      const boxTypingRemove = elementListTyping.querySelector(`[user-id="${data.userId}"]`)
+      if (boxTypingRemove) {
+        elementListTyping.removeChild(boxTypingRemove)
+      }
+    }
+  })
+}
 // - end SEVER_RETURN_TYPING
+
 
