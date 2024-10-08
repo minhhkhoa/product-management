@@ -1,6 +1,8 @@
 const Chat = require("../../models/chat.model")
 const User = require("../../models/user.model")
 
+const uploadToCloudinary = require("../../helpers/uploadToCloudinary")
+
 //[get]: chat/index
 module.exports.index = async (req, res) => {
   //- id ng dung
@@ -10,11 +12,18 @@ module.exports.index = async (req, res) => {
   //- start socket.io
   //- once: chi gui 1 lan duy nhat thoi
   _io.once('connection', (socket) => {//- lang nghe sk nhan ve
-    socket.on("CLIENT_SEND_MESSAGE", async (content)=>{//-2
+    socket.on("CLIENT_SEND_MESSAGE", async (data) => {//-2
+      let images = []
+      for(const imageBuffer of data.images){
+        const link = await uploadToCloudinary(imageBuffer)
+        images.push(link)
+      }
+      
       //- khi nhan dc data thi luu vao db
       const chat = new Chat({
         user_id: userId,
-        content: content
+        content: data.content,
+        images: images
       })
       await chat.save()
 
@@ -23,13 +32,14 @@ module.exports.index = async (req, res) => {
       _io.emit("SEVER_RETURN_MESSAGE", {//- gui di 1 obj
         userId: userId,
         fullName: fullName,
-        content: content
+        content: data.content,
+        images: images
       })
     })
 
     //- start typing
     socket.on("CLIENT_SEND_TYPING", async (type) => {
-      socket.broadcast.emit("SEVER_RETURN_TYPING",{
+      socket.broadcast.emit("SEVER_RETURN_TYPING", {
         userId: userId,
         fullName: fullName,
         type: type
@@ -44,7 +54,7 @@ module.exports.index = async (req, res) => {
     deleted: false
   })
 
-  for(const chat of chats){
+  for (const chat of chats) {
     const infoUser = await User.findOne({
       _id: chat.user_id
     }).select("fullName")
@@ -54,7 +64,7 @@ module.exports.index = async (req, res) => {
   }
 
 
-  res.render("client/pages/chat/index",{
+  res.render("client/pages/chat/index", {
     pageTitle: "Chat",
     chats: chats
   })

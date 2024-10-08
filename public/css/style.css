@@ -334,6 +334,7 @@
   border-radius: 25px;
   border: 1px solid #ddd;
   outline: none;
+  max-height: 45px;
 }
 
 .inner-foot button {
@@ -347,6 +348,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  max-height: 45px;
 }
 
 .inner-foot button i {
@@ -358,6 +360,50 @@
   justify-content: center;
   margin-top: 5px;
   padding: 0 5px;
+  max-height: 45px;
+}
+
+.chat .inner-body .inner-images img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background: #efefef;
+  padding: 10px;
+  margin: 0 5px 5px 0;
+  border-radius: 5px;
+}
+
+.chat .inner-body .inner-outgoing .inner-images {
+  margin-left: auto;
+  text-align: right;
+}
+
+.chat .inner-body .inner-outgoing .inner-images img {
+  margin: 0 0 5px 5px;
+}
+
+.chat .inner-preview-images {
+  position: relative;
+}
+
+.chat .inner-preview-images .label-container {
+  display: none;
+}
+
+.chat .inner-preview-images .input-container {
+  display: none;
+}
+
+.chat .inner-preview-images .image-preview {
+  height: auto;
+  padding: 0;
+  border-radius: 0;
+
+}
+
+.chat .inner-preview-images .image-preview-item {
+  width: 90px;
+  background-size: contain;
 }
 
 /* end chat */
@@ -401,22 +447,28 @@
   margin: 0 3px;
 }
 
-.box-typing .inner-dots span:nth-child(2){
+.box-typing .inner-dots span:nth-child(2) {
   animation-delay: 0.2s;
 }
-.box-typing .inner-dots span:nth-child(3){
+
+.box-typing .inner-dots span:nth-child(3) {
   animation-delay: 0.4s;
 }
 
-@keyframes blink{
-  0%{
+@keyframes blink {
+  0% {
     opacity: 0.1;
   }
-  20%{
+
+  20% {
     opacity: 1;
   }
-  100%{
+
+  100% {
     opacity: 0.1;
   }
 }
+
 /* end box typing */
+
+/*  */
