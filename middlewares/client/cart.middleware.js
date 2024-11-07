@@ -20,7 +20,7 @@ module.exports.cartId = async (req, res, next) => {
     const cart = await Cart.findOne({ _id: cartId });
 
 
-    if (cart.products.length > 0) { // Nếu có giỏ hàng nhưng chưa có sản phẩm
+    if (cart?.products?.length > 0) { // Nếu có giỏ hàng nhưng chưa có sản phẩm
       cart.totalQuantity = cart.products.reduce((sum, item) => sum + item.quantity, 0);
       res.locals.miniCart = cart; // Gán cart vào res.locals
     }
